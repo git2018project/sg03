@@ -3,6 +3,11 @@ package project3;
  * @author Shushma Gudla
  */
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class CarTracker{
@@ -17,40 +22,47 @@ public class CarTracker{
         cars = new DLBBasedOnVIN();
         heapManager = new CarPQManager();
         String input = "";
-
-        do{
-           
-            System.out.println("\t 1) Add a car");
-            System.out.println("\t 2) Update a car");
-            System.out.println("\t 3) Remove a car");
-            System.out.println("\t 4) Retrieve the lowest priced car");
-            System.out.println("\t 5) Retrieve the lowest mileage car");
-            System.out.println("\t 6) Retrieve the lowest priced car by make or model");
-            System.out.println("\t 7) Retrieve the lowest mileage car by make or model");
-            System.out.println("\t 8) Quit");
-            System.out.print("Choose a number: ");
-            input = scanner.nextLine();
-
-            if(input.equals("1")){
-                addCar();
-            } else if(input.equals("2")){
-                updateCar();
-            } else if(input.equals("3")){
-                removeCar();
-            } else if(input.equals("4")){
-                getLowestPriceCar();
-            } else if(input.equals("5")){
-                getLowestMileageCar();
-            } else if(input.equals("6")){
-                getLowestPriceCarByMakeAndModel();
-            } else if(input.equals("7")){
-                getLowestMileageCarByMakeAndModel();
-            } else if(input.equals("8")){
-                System.exit(0);
-            } else{
-                System.out.println("Invalid choice!\n");
-            }
-        } while(!input.equals("8"));
+        try{ 
+	        readCarsFromFile(); // load list of cars from the cars.txt file.
+	
+	        do{
+	           
+	            System.out.println("\t 1) Add a car");
+	            System.out.println("\t 2) Update a car");
+	            System.out.println("\t 3) Remove a car");
+	            System.out.println("\t 4) Retrieve the lowest priced car");
+	            System.out.println("\t 5) Retrieve the lowest mileage car");
+	            System.out.println("\t 6) Retrieve the lowest priced car by make or model");
+	            System.out.println("\t 7) Retrieve the lowest mileage car by make or model");
+	            System.out.println("\t 8) Quit");
+	            System.out.print("Choose a number: ");
+	            input = scanner.nextLine();
+	
+	            if(input.equals("1")){
+	                addCar();
+	            } else if(input.equals("2")){
+	                updateCar();
+	            } else if(input.equals("3")){
+	                removeCar();
+	            } else if(input.equals("4")){
+	                getLowestPriceCar();
+	            } else if(input.equals("5")){
+	                getLowestMileageCar();
+	            } else if(input.equals("6")){
+	                getLowestPriceCarByMakeAndModel();
+	            } else if(input.equals("7")){
+	                getLowestMileageCarByMakeAndModel();
+	            } else if(input.equals("8")){
+	                System.exit(0);
+	            } else{
+	                System.out.println("Invalid choice!\n");
+	            }
+	        } while(!input.equals("8"));
+        }  catch (IOException e)
+        {
+            System.out.println("cars.txt File not found");
+            
+        } 
     }
 
     //A user adds a car with its necessary information
@@ -249,6 +261,30 @@ public class CarTracker{
 
 		}
 		return number;
+	}
+
+	public static void readCarsFromFile() throws IOException {
+
+		FileReader reader = new FileReader("cars.txt");
+		BufferedReader bufferedReader = new BufferedReader(reader);
+		String line;
+		int lineNumber = 1;
+		while ((line = bufferedReader.readLine()) != null) {
+			if (lineNumber != 1) {
+				
+				String[] values = line.split(":"); // parse input line with delimeter :
+
+				Car newCar = new Car(values[0], values[1], values[2], values[5], Integer.parseInt(values[4]),
+						Integer.parseInt(values[3]));
+
+				cars.insert(newCar); 
+				heapManager.insert(newCar);
+											
+
+			}
+			lineNumber++;
+		}
+
 	}
          
     
